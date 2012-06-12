@@ -3,6 +3,10 @@ vimeo-wrapper
 
 A thin wrapper for vimeo activities with upload-capabilities
 
+Installation:
+    
+    pip install git+http://github.com/okke-formsma/vimeo-wrapper#egg=vimeo
+
 Usage:
 
     vimeo = Vimeo(access_token, access_token_secret, consumer_key, consumer_secret)
