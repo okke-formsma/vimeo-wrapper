@@ -8,9 +8,11 @@ Usage:
     vimeo = Vimeo(access_token, access_token_secret, consumer_key, consumer_secret)
 
 upload video file
+
     video_id = vimeo.upload(path.join(video_file_name_with_path))
 
 set video metadata
+
     vimeo.request('vimeo.videos.setTitle', data={
         'video_id': video_id,
         'title': "Vimeo-wrapper video",
@@ -25,4 +27,5 @@ set video metadata
     })
   
 get vimeo info on a video
+
     info = vimeo.request('vimeo.videos.getInfo', data=dict(video_id=video_id))
