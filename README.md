@@ -9,7 +9,7 @@ Usage:
 
 upload video file
 
-    video_id = vimeo.upload(path.join(video_file_name_with_path))
+    video_id = vimeo.upload(file="/home/okke-formsma/videos/test.mov")
 
 set video metadata
 
