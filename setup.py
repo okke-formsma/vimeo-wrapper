@@ -7,7 +7,7 @@ f.close()
 
 setup(
     name='vimeo-wrapper',
-    version='0.0.1',
+    version='0.0.2',
     description='A thin wrapper around requests for vimeo',
     long_description=readme,
     author='Okke Formsma',
