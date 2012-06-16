@@ -1,6 +1,8 @@
+from collections import OrderedDict
 import os, requests
 from oauth_hook.hook import OAuthHook
 from requests.exceptions import ConnectionError
+import sys
 
 class Vimeo(object):
     VIMEO_ENDPOINT = 'http://vimeo.com/api/rest/v2/'
@@ -25,14 +27,15 @@ class Vimeo(object):
         data['method'] = method
         params = params or {}
         params['format'] = 'json'
-        return self.client.post(self.VIMEO_ENDPOINT, params=params, data=data, *args, **kwargs).json
+        response = self.client.post(self.VIMEO_ENDPOINT, params=params, data=data, *args, **kwargs)
+        return response.json
 
-    def upload(self, file, max_retries=5, chunk_size=1024*1024*128):
+    def upload(self, file, max_retries=5, chunk_size=1024 * 1024 * 128):
         """ Uploads the file through post. (not streaming! The whole file is loaded in memory!)
         arguments:
         file: absolute file path to file. (e.g. "/home/oformsma/media/movie.mov")
         max_retries: number of times a chunk should be retried for upload
-        chunk_size: bytes. chunks of this size get loaded into memory and sent.
+        chunk_size: bytes. chunks of this size get loaded into memory and sent. Defaults to 128 MB.
 
         Returns the vimeo video id if the upload is successful. Lets any exceptions from the requests package through.
         """
@@ -52,17 +55,14 @@ class Vimeo(object):
                 if chunk == '':
                     break
 
-                multipart_data = {
-                    'ticket_id': ticket['id'],
-                    'chunk_id': chunk_id,
-                    'file_data': (basename, chunk),
-                    }
-
+                # data needs to be an OrderedDict!
+                # Otherwise, the file data might come before the chunk_id parameter. The Vimeo API will then not recognize
+                # the chunk_id.
                 self.client.post(
                     ticket['endpoint'],
-                    params={'format': 'json'},
+                    data=OrderedDict({'chunk_id': chunk_id}),
                     config={'max_retries': max_retries},
-                    files=multipart_data,
+                    files={'file_data': (basename + '.' + str(chunk_id), chunk)},
                     )
 
                 chunk_sizes.append(len(chunk))
@@ -71,8 +71,9 @@ class Vimeo(object):
         # Verify file upload size
         try:
             verify = self.request('vimeo.videos.upload.verifyChunks', data={'ticket_id': ticket['id']})
-            if int(verify['ticket']['chunks']['chunk']['size']) != os.path.getsize(file):
-                raise UploadException("The uploaded filesize and file size on disk are not the same")
+            for i, size in enumerate(chunk_sizes):
+                if int(verify['ticket']['chunks']['chunk'][i]['size']) != size:
+                    raise UploadException("The uploaded filesize and file size on disk are not the same")
         except (KeyError, ValueError):
             raise UploadException("The uploaded file could not be verified.")
 
