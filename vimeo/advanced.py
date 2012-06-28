@@ -71,9 +71,15 @@ class Vimeo(object):
         # Verify file upload size
         try:
             verify = self.request('vimeo.videos.upload.verifyChunks', data={'ticket_id': ticket['id']})
-            for i, size in enumerate(chunk_sizes):
-                if int(verify['ticket']['chunks']['chunk'][i]['size']) != size:
+            if len(chunk_sizes) == 1:
+                #@#T@($^@ VIMEO ONE CHUNK IS NOT A SPECIAL CASE
+                #notice the missing [i] in the next line.
+                if int(verify['ticket']['chunks']['chunk']['size']) != chunk_sizes[0]:
                     raise UploadException("The uploaded filesize and file size on disk are not the same")
+            else:
+                for i, size in enumerate(chunk_sizes):
+                    if int(verify['ticket']['chunks']['chunk'][i]['size']) != size:
+                        raise UploadException("The uploaded filesize and file size on disk are not the same")
         except (KeyError, ValueError):
             raise UploadException("The uploaded file could not be verified.")
 
