@@ -25,7 +25,7 @@ class Vimeo(object):
         response = self.client.post(self.VIMEO_ENDPOINT, params=params, data=data,auth=self.auth, *args, **kwargs)
         return response.json()
 
-    def upload(self, file, max_retries=5, chunk_size=1024 * 1024 * 128):
+    def upload(self, file, chunk_size=1024 * 1024 * 128):
         """ Uploads the file through post. (not streaming! The whole file is loaded in memory!)
         arguments:
         file: absolute file path to file. (e.g. "/home/oformsma/media/movie.mov")
