@@ -1,11 +1,11 @@
 import os
 from setuptools import setup, find_packages
 
-long_description = file('README.markdown','r').read()
+long_description = file('README.md','r').read()
 
 setup(
     name='vimeo-wrapper',
-    version='0.4.1',
+    version='0.4.2',
     description='A thin wrapper around requests for vimeo',
     long_description=long_description,
     author='Okke Formsma',
