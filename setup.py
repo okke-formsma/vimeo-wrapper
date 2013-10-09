@@ -1,15 +1,13 @@
 import os
 from setuptools import setup, find_packages
 
-f = open(os.path.join(os.path.dirname(__file__), 'README.md'))
-readme = f.read()
-f.close()
+long_description = file('README.markdown','r').read()
 
 setup(
     name='vimeo-wrapper',
-    version='0.4',
+    version='0.4.1',
     description='A thin wrapper around requests for vimeo',
-    long_description=readme,
+    long_description=long_description,
     author='Okke Formsma',
     author_email='okke.formsma@gmail.com',
     url='http://github.com/okke-formsma/vimeo-wrapper',
