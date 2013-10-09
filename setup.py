@@ -7,7 +7,7 @@ f.close()
 
 setup(
     name='vimeo-wrapper',
-    version='0.0.2',
+    version='0.0.3',
     description='A thin wrapper around requests for vimeo',
     long_description=readme,
     author='Okke Formsma',
@@ -15,7 +15,7 @@ setup(
     url='http://github.com/okke-formsma/vimeo-wrapper/tree/master',
     packages=['vimeo'],
     install_requires=[
-        'requests',
+        'requests<2.0',
         'requests-oauth',
         ],
     classifiers=[
