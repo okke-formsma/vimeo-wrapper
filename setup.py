@@ -1,7 +1,7 @@
 import os
 from setuptools import setup, find_packages
 
-long_description = file('README.md','r').read()
+long_description = file('README.rst','r').read()
 
 setup(
     name='vimeo-wrapper',
