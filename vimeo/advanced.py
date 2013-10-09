@@ -1,23 +1,17 @@
 from collections import OrderedDict
 import os, requests
-from oauth_hook.hook import OAuthHook
 from requests.exceptions import ConnectionError
-import sys
+from requests_oauthlib import OAuth1
+
 
 class Vimeo(object):
     VIMEO_ENDPOINT = 'http://vimeo.com/api/rest/v2/'
     client = None
 
-    def __init__(self, auth_token, auth_token_secret, key, secret):
-        oauth_hook = OAuthHook(
-            access_token=auth_token,
-            access_token_secret=auth_token_secret,
-            consumer_key=key,
-            consumer_secret=secret,
-            header_auth=True,
-            )
 
-        self.client = requests.session(hooks={'pre_request': oauth_hook})
+    def __init__(self, auth_token, auth_token_secret, key, secret):
+        self.auth = OAuth1(key, secret,auth_token, auth_token_secret)
+        self.client = requests.session()
 
     def request(self, method, data=None, params=None, *args, **kwargs):
         """ Request `method` from Vimeo, using post-data data, get parameters params.
@@ -27,10 +21,11 @@ class Vimeo(object):
         data['method'] = method
         params = params or {}
         params['format'] = 'json'
-        response = self.client.post(self.VIMEO_ENDPOINT, params=params, data=data, *args, **kwargs)
-        return response.json
 
-    def upload(self, file, max_retries=5, chunk_size=1024 * 1024 * 128):
+        response = self.client.post(self.VIMEO_ENDPOINT, params=params, data=data,auth=self.auth, *args, **kwargs)
+        return response.json()
+
+    def upload(self, file, chunk_size=1024 * 1024 * 128):
         """ Uploads the file through post. (not streaming! The whole file is loaded in memory!)
         arguments:
         file: absolute file path to file. (e.g. "/home/oformsma/media/movie.mov")
@@ -61,7 +56,6 @@ class Vimeo(object):
                 self.client.post(
                     ticket['endpoint'],
                     data=OrderedDict({'chunk_id': chunk_id}),
-                    config={'max_retries': max_retries},
                     files={'file_data': (basename + '.' + str(chunk_id), chunk)},
                     )
 
