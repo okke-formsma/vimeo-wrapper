@@ -29,7 +29,6 @@ class Vimeo(object):
         """ Uploads the file through post. (not streaming! The whole file is loaded in memory!)
         arguments:
         file: absolute file path to file. (e.g. "/home/oformsma/media/movie.mov")
-        max_retries: number of times a chunk should be retried for upload
         chunk_size: bytes. chunks of this size get loaded into memory and sent. Defaults to 128 MB.
 
         Returns the vimeo video id if the upload is successful. Lets any exceptions from the requests package through.
