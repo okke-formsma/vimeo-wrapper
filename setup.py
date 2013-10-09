@@ -5,7 +5,7 @@ long_description = file('README.rst','r').read()
 
 setup(
     name='vimeo-wrapper',
-    version='0.4.3',
+    version='0.4.4',
     description='A thin wrapper around requests for vimeo',
     long_description=long_description,
     author='Okke Formsma',
